@@ -221,7 +221,7 @@
 
     <main class="w-full max-w-5xl flex flex-col items-center gap-6 md:gap-8 px-1 md:px-2 mx-auto">
         <section id="main-grid-section" class="w-full p-3 md:p-4 glassmorphism-panel">
-            <h2 id="quantailine-title" class="text-lg md:text-2xl font-semibold mb-3 md:mb-4 text-center text-blue-600">Quantailine Keyboard - Santime</h2>
+            <h2 id="quantailine-title" class="text-lg md:text-2xl font-semibold mb-3 md:mb-4 text-center text-blue-600">Quantailine - Santime</h2>
             <div id="main-grid-container" class="main-grid-display-container">
             </div>
             <div id="selection-message" class="selection-feedback"></div>
@@ -246,25 +246,25 @@
                 Reset
             </button>
             <button id="generate-btn" class="btn btn-generate"> 
-                Generate Laporan
+                Generate
             </button>
         </section>
 
         <section id="output-report-container" class="w-full p-3 md:p-4 glassmorphism-panel hidden">
-            <h2 class="text-lg md:text-2xl font-semibold mb-3 md:mb-6 text-center text-blue-600">Laporan Visual Tergenerasi</h2>
+            <h2 class="text-lg md:text-2xl font-semibold mb-3 md:mb-6 text-center text-blue-600">Visualisasi Yang Tergenerasi</h2>
             <div class="mb-4 md:mb-6">
-                <h3 id="report-quantailine-title" class="text-md md:text-xl font-medium mb-2 md:mb-3 text-pink-600 text-center">Visualisasi Yang Tergenerasi Sanva Theory Aritmatika</h3>
+                <h3 id="report-quantailine-title" class="text-md md:text-xl font-medium mb-2 md:mb-3 text-pink-600 text-center">Sanva Theory</h3>
                 <div id="report-main-grid" class="main-grid-display-container">
                 </div>
             </div>
             <div class="flex flex-col items-center gap-4 md:gap-6">
                 <div>
-                    <h3 class="text-md md:text-xl font-medium mb-2 md:mb-3 text-pink-600 text-center">Angka Terpilih & Histori Rooting:</h3>
+                    <h3 class="text-md md:text-xl font-medium mb-2 md:mb-3 text-pink-600 text-center">Rooting:</h3>
                     <div id="report-selected-history" class="history-slots-container"> 
                     </div>
                 </div>
                  <div class="mt-3 md:mt-4 w-full max-w-md mx-auto text-center"> 
-                    <h3 id="report-santime-title" class="text-md md:text-xl font-medium mb-1 md:mb-2 text-center text-blue-700">Signals Santime</h3>
+                    <h3 id="report-santime-title" class="text-md md:text-xl font-medium mb-1 md:mb-2 text-center text-blue-700">Santime</h3>
                     <div id="report-santime-rooting-value" class="final-dr-cell p-2 md:p-3 w-16 h-16 md:w-20 md:h-20 mx-auto">
                         -
                     </div>
@@ -450,8 +450,8 @@
             });
 
             generateBtn.addEventListener('click', () => {
-                reportQuantailineTitle.textContent = "Visualisasi Yang Tergenerasi Sanva Theory Aritmatika";
-                reportSantimeTitle.textContent = "Signals Santime";
+                reportQuantailineTitle.textContent = "Sanva Theory";
+                reportSantimeTitle.textContent = "Santime";
 
                 reportMainGrid.innerHTML = ''; 
                 reportSelectedHistory.innerHTML = ''; 
@@ -459,10 +459,10 @@
                 reportSantimeRootingHistory.innerHTML = santimeRootingHistoryDisplay.innerHTML; 
 
                 if (selections.length === 3) {
-                    reportLayerNotification.textContent = "Ini tiga layer, potensial koreksi...";
+                    reportLayerNotification.textContent = "Ini tiga layer, bagusnya buat koreksi...";
                     reportLayerNotification.style.display = 'block';
                 } else if (selections.length === 5) {
-                    reportLayerNotification.textContent = "Ini lima layer, potensial retracment...";
+                    reportLayerNotification.textContent = "Ini lima layer, bagusnya buat retracment jika sesuai trend...";
                     reportLayerNotification.style.display = 'block';
                 } else {
                     reportLayerNotification.style.display = 'none'; 
