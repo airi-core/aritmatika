@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OHLC Digital Root Analyzer - SanClass Style</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8; 
+            color: #1e293b; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        .glassmorphism-panel {
+            background: rgba(224, 242, 254, 0.25); 
+            backdrop-filter: blur(18px) saturate(200%);
+            -webkit-backdrop-filter: blur(18px) saturate(200%);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.3); 
+            box-shadow: 0 10px 35px 0 rgba(31, 38, 135, 0.2); 
+            transition: all 0.3s ease;
+            width: 100%;
+            max-width: 700px; 
+        }
+        
+        .input-field-calculator {
+            width: 100%;
+            padding: 10px 12px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #1e293b;
+            background-color: rgba(255, 255, 255, 0.4);
+            border: 1px solid rgba(200, 220, 255, 0.7);
+            border-radius: 8px;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .input-field-calculator::placeholder {
+            color: rgba(51, 65, 85, 0.5);
+        }
+        .input-field-calculator:focus {
+            outline: none;
+            border-color: #3b82f6; 
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.4);
+        }
+
+        .calculation-history-display, .final-root-display-container, .combined-history-display {
+            font-size: 0.8rem;
+            padding: 10px;
+            margin-top: 8px;
+            border-radius: 8px;
+            background-color: rgba(200, 220, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #334155;
+            min-height: 30px;
+            line-height: 1.5;
+            word-break: break-word;
+        }
+        .final-root-display-container {
+            font-size: 1rem;
+            font-weight: 700;
+            text-align: center;
+            color: #1e3a8a;
+            background-color: rgba(191, 219, 254, 0.3);
+        }
+        .final-root-value {
+            font-size: 1.5rem;
+            color: #1d4ed8; 
+        }
+        .combined-history-display {
+            background-color: rgba(224, 242, 254, 0.2);
+            color: #1e3a8a;
+        }
+
+        /* .chart-container dihapus */
+
+        .btn { 
+            color: white;
+            font-weight: 600;
+            padding: 10px 20px; 
+            font-size: 0.9rem; 
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 5px; 
+        }
+        .btn-calculate { 
+            background: linear-gradient(145deg, #3b82f6, #2563eb);
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.25);
+        }
+        .btn-calculate:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.35);
+        }
+        .btn-reset-calculator { 
+            background: linear-gradient(145deg, #f87171, #ef4444); 
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.25);
+        }
+        .btn-reset-calculator:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(239, 68, 68, 0.35);
+        }
+        
+        @media (max-width: 600px) {
+            .input-field-calculator { font-size: 0.8rem; padding: 8px 10px;}
+            .calculation-history-display, .final-root-display-container, .combined-history-display { font-size: 0.75rem; padding: 8px;}
+            .final-root-value { font-size: 1.3rem; }
+            .btn { padding: 8px 15px; font-size: 0.8rem; } 
+            body { padding: 10px; }
+            .glassmorphism-panel { padding: 1rem; }
+        }
+    </style>
+</head>
+<body class="text-slate-800">
+
+    <header class="w-full max-w-3xl p-6 mb-8 text-center glassmorphism-panel mx-auto">
+        <h1 class="text-2xl md:text-3xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-500 via-pink-500 to-blue-500">
+            OHLC Digital Root Analyzer
+        </h1>
+    </header>
+
+    <main class="w-full max-w-3xl flex flex-col items-center gap-6 px-2 mx-auto">
+        <section class="w-full p-6 glassmorphism-panel">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <div>
+                    <label for="inputOpen" class="block text-sm font-medium text-slate-300 mb-1">Input 1 (Open):</label>
+                    <input type="text" id="inputOpen" inputmode="numeric" pattern="[0-9]*" class="input-field-calculator" placeholder="Angka Open">
+                    <div id="historyOpen" class="calculation-history-display mt-2">-</div>
+                </div>
+                <div>
+                    <label for="inputHigh" class="block text-sm font-medium text-slate-300 mb-1">Input 2 (High):</label>
+                    <input type="text" id="inputHigh" inputmode="numeric" pattern="[0-9]*" class="input-field-calculator" placeholder="Angka High">
+                    <div id="historyHigh" class="calculation-history-display mt-2">-</div>
+                </div>
+                <div>
+                    <label for="inputLow" class="block text-sm font-medium text-slate-300 mb-1">Input 3 (Low):</label>
+                    <input type="text" id="inputLow" inputmode="numeric" pattern="[0-9]*" class="input-field-calculator" placeholder="Angka Low">
+                    <div id="historyLow" class="calculation-history-display mt-2">-</div>
+                </div>
+                <div>
+                    <label for="inputClose" class="block text-sm font-medium text-slate-300 mb-1">Input 4 (Close):</label>
+                    <input type="text" id="inputClose" inputmode="numeric" pattern="[0-9]*" class="input-field-calculator" placeholder="Angka Close">
+                    <div id="historyClose" class="calculation-history-display mt-2">-</div>
+                </div>
+            </div>
+
+            <div class="flex justify-center gap-4 mb-6">
+                <button id="calculateBtn" class="btn btn-calculate">Hitung</button> <button id="resetBtnCalc" class="btn btn-reset-calculator">Reset</button>
+            </div>
+            
+            <div class="mt-6">
+                <h3 class="text-md font-semibold mb-2 text-sky-300 text-center">Signals Santime (Gabungan):</h3>
+                <div id="combinedRootResult" class="final-root-display-container">
+                    <span id="combinedRootValue" class="final-root-value">-</span>
+                </div>
+                <div id="combinedRootHistory" class="combined-history-display mt-2">-</div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="w-full max-w-3xl p-6 mt-8 text-center text-xs md:text-sm text-slate-400 mx-auto">
+        &copy; <span id="currentYearCalc"></span> SanClass Style.
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const inputOpen = document.getElementById('inputOpen');
+            const inputHigh = document.getElementById('inputHigh');
+            const inputLow = document.getElementById('inputLow');
+            const inputClose = document.getElementById('inputClose');
+
+            const historyOpen = document.getElementById('historyOpen');
+            const historyHigh = document.getElementById('historyHigh');
+            const historyLow = document.getElementById('historyLow');
+            const historyClose = document.getElementById('historyClose');
+
+            const calculateBtn = document.getElementById('calculateBtn');
+            const resetBtnCalc = document.getElementById('resetBtnCalc');
+            
+            const combinedRootValueDisplay = document.getElementById('combinedRootValue');
+            const combinedRootHistoryDisplay = document.getElementById('combinedRootHistory');
+            
+            document.getElementById('currentYearCalc').textContent = new Date().getFullYear();
+
+            // Variabel ohlcChart dihapus
+
+            function calculateDigitalRootWithHistory(inputStr) {
+                let currentValStr = String(inputStr).trim();
+                if (!currentValStr || !/^\d+$/.test(currentValStr)) {
+                    return { finalRoot: null, history: 'Input tidak valid.' };
+                }
+                let historyLog = `${currentValStr}`; 
+                let sum = 0;
+                if (currentValStr.length === 1 && currentValStr !== "0") {
+                     sum = parseInt(currentValStr, 10);
+                } else if (currentValStr === "0") {
+                    sum = 0; 
+                } else { 
+                    let firstSumCalculation = "";
+                    for (let i = 0; i < currentValStr.length; i++) {
+                        sum += parseInt(currentValStr[i], 10);
+                        firstSumCalculation += currentValStr[i] + (i < currentValStr.length - 1 ? "+" : "");
+                    }
+                    historyLog += ` &rarr; ${firstSumCalculation} = ${sum}`;
+                }
+                let tempSum = sum; 
+                while (tempSum > 9) {
+                    let sumAsString = String(tempSum); 
+                    let nextSum = 0; 
+                    let currentStepCalculation = "";
+                    for (let i = 0; i < sumAsString.length; i++) {
+                        nextSum += parseInt(sumAsString[i], 10); 
+                        currentStepCalculation += sumAsString[i] + (i < sumAsString.length - 1 ? "+" : "");
+                    }
+                    tempSum = nextSum; 
+                    historyLog += ` &rarr; ${currentStepCalculation} = ${tempSum}`;
+                }
+                return { finalRoot: tempSum, history: historyLog }; 
+            }
+
+            // Fungsi createOrUpdateChart dihapus
+            
+            function processInput(inputElement, historyElement) {
+                const inputValue = inputElement.value;
+                if (!inputValue.trim()) {
+                    historyElement.innerHTML = 'Input kosong.';
+                    return null; 
+                }
+                const result = calculateDigitalRootWithHistory(inputValue);
+                historyElement.innerHTML = result.history;
+                return result.finalRoot;
+            }
+
+            function performAllCalculations() {
+                const rootOpen = processInput(inputOpen, historyOpen);
+                const rootHigh = processInput(inputHigh, historyHigh);
+                const rootLow = processInput(inputLow, historyLow);
+                const rootClose = processInput(inputClose, historyClose);
+
+                // Logika untuk chart dihapus
+
+                let sumOfRoots = 0;
+                let validRootsCount = 0;
+                [rootOpen, rootHigh, rootLow, rootClose].forEach(root => {
+                    if (root !== null) {
+                        sumOfRoots += root;
+                        validRootsCount++;
+                    }
+                });
+
+                if (validRootsCount > 0) {
+                    const combinedResult = calculateDigitalRootWithHistory(sumOfRoots.toString());
+                    combinedRootValueDisplay.textContent = combinedResult.finalRoot !== null ? combinedResult.finalRoot : '-';
+                    combinedRootHistoryDisplay.innerHTML = combinedResult.history;
+                } else {
+                    combinedRootValueDisplay.textContent = '-';
+                    combinedRootHistoryDisplay.innerHTML = '-';
+                }
+            }
+
+            calculateBtn.addEventListener('click', performAllCalculations);
+            
+            [inputOpen, inputHigh, inputLow, inputClose].forEach(input => {
+                input.addEventListener('input', (event) => {
+                    event.target.value = event.target.value.replace(/[^\d]/g, '');
+                });
+            });
+
+            resetBtnCalc.addEventListener('click', () => {
+                inputOpen.value = '';
+                inputHigh.value = '';
+                inputLow.value = '';
+                inputClose.value = '';
+
+                historyOpen.innerHTML = '-';
+                historyHigh.innerHTML = '-';
+                historyLow.innerHTML = '-';
+                historyClose.innerHTML = '-';
+                
+                combinedRootValueDisplay.textContent = '-';
+                combinedRootHistoryDisplay.innerHTML = '-';
+
+                // Logika reset chart dihapus
+                inputOpen.focus();
+            });
+            resetBtnCalc.click();
+        });
+    </script>
+</body>
+</html>
