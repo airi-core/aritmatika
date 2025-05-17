@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SanClass Trading Labs - 81 Pilihan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8; 
+            color: #1e293b; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        .glassmorphism-panel {
+            background: rgba(224, 242, 254, 0.25); 
+            backdrop-filter: blur(18px) saturate(200%);
+            -webkit-backdrop-filter: blur(18px) saturate(200%);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.3); 
+            box-shadow: 0 10px 35px 0 rgba(31, 38, 135, 0.2); 
+            transition: all 0.3s ease;
+            width: 100%; 
+        }
+
+        .grid-cell, .history-display-slot, .final-dr-cell, .santime-history-display {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 600; 
+            border-radius: 8px; 
+            transition: background-color 0.2s ease, transform 0.1s ease;
+            background-color: rgba(200, 220, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #334155;
+            font-size: 0.7rem; 
+            line-height: 1.2; 
+            padding: 2px; 
+        }
+        .grid-cell {
+            aspect-ratio: 1 / 1;
+            cursor: pointer;
+        }
+        .history-display-slot { 
+            aspect-ratio: auto; /* Bisa lebih tinggi dari lebar */
+            height: auto;
+            min-height: 30px; /* Tinggi minimal agar histori muat */
+            padding: 3px;
+            font-size: 0.5rem; /* Font sangat kecil untuk 81 slot */
+            text-align: center;
+            align-items: flex-start; 
+            word-break: break-word; 
+            border-radius: 4px; /* Radius lebih kecil */
+        }
+        .santime-history-display { 
+            font-size: 0.75rem;
+            padding: 8px;
+            margin-top: 8px;
+            border-radius: 8px;
+            background-color: rgba(191, 219, 254, 0.2);
+            color: #1e3a8a;
+            text-align: center;
+            min-height: 30px;
+            line-height: 1.4;
+        }
+         .layer-notification { 
+            font-size: 0.8rem;
+            padding: 8px;
+            margin-top: 10px;
+            border-radius: 8px;
+            background-color: rgba(254, 249, 195, 0.3); 
+            color: #713f12; 
+            border: 1px solid rgba(250, 204, 21, 0.4);
+            text-align: center;
+            min-height: 30px;
+            line-height: 1.4;
+        }
+
+        .final-dr-cell { 
+            aspect-ratio: 1 / 1;
+            font-size: 1.2em; 
+            color: #1e3a8a; 
+            background-color: rgba(191, 219, 254, 0.3); 
+            border: 2px solid rgba(59, 130, 246, 0.5);
+        }
+
+        .grid-cell:hover:not(.highlighted-pink):not(.highlighted-blue) {
+            transform: scale(1.05); 
+            background-color: rgba(200, 220, 255, 0.25);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .highlighted-pink { 
+            background-color: rgba(236, 72, 153, 0.65) !important; 
+            color: #fff !important;
+            font-weight: 700;
+            border-color: rgba(236, 72, 153, 0.85);
+            transform: scale(1.05); 
+        }
+        .highlighted-blue { 
+            background-color: rgba(59, 130, 246, 0.65) !important; 
+            color: #fff !important;
+            font-weight: 700;
+            border-color: rgba(37, 99, 235, 0.85); 
+            transform: scale(1.05); 
+        }
+        
+        .report-highlighted-pink {
+            background-color: rgba(244, 114, 182, 0.75) !important; 
+            color: #fff !important;
+            font-weight: 700;
+            border-color: rgba(219, 39, 119, 0.65);
+        }
+        .report-highlighted-blue {
+            background-color: rgba(96, 165, 250, 0.75) !important; 
+            color: #fff !important;
+            font-weight: 700;
+            border-color: rgba(59, 130, 246, 0.65);
+        }
+
+        .btn { 
+            color: white;
+            font-weight: 600;
+            padding: 10px 20px; 
+            font-size: 0.9rem; 
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 0 5px; 
+        }
+        .btn-generate {
+            background: linear-gradient(145deg, #3b82f6, #2563eb);
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.25);
+        }
+        .btn-generate:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.35);
+        }
+        .btn-reset { 
+            background: linear-gradient(145deg, #f87171, #ef4444); 
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.25);
+        }
+        .btn-reset:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(239, 68, 68, 0.35);
+        }
+        
+        .selection-feedback {
+            color: #ef4444; 
+            font-size: 0.875rem;
+            text-align: center;
+            min-height: 1.25rem; 
+            margin-top: 0.5rem;
+        }
+
+        .main-grid-display-container {
+            display: grid;
+            grid-template-columns: repeat(9, minmax(0, 1fr)); 
+            gap: 2px; 
+            width: 100%; 
+            max-width: 500px; 
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        /* Container untuk slot histori (sekarang bisa sampai 81 slot) */
+        .history-slots-container {
+            display: grid;
+            grid-template-columns: repeat(9, 1fr); /* 9 kolom agar mirip grid utama */
+            gap: 2px; /* Gap kecil */
+            width: 100%; 
+            max-width: 600px; /* Disesuaikan */
+            margin: 1rem auto; 
+        }
+         @media (min-width: 768px) {
+            .history-slots-container {
+                max-width: 700px;
+            }
+            .grid-cell {
+                font-size: 0.8rem; 
+            }
+             .history-display-slot {
+                font-size: 0.55rem; /* Sedikit lebih besar jika ada ruang */
+            }
+        }
+         @media (max-width: 600px) { 
+            .history-slots-container {
+                grid-template-columns: repeat(auto-fit, minmax(60px, 1fr)); /* Lebih fleksibel untuk layar kecil */
+                 max-width: 95%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .grid-cell { font-size: 0.6rem; border-radius: 4px; } 
+            .history-display-slot { font-size: 0.45rem; min-height: 25px; padding: 2px;} 
+            .final-dr-cell { font-size: 1rem; }
+            body { padding: 5px; }
+            .glassmorphism-panel { padding: 0.5rem; border-radius: 12px; }
+            .btn { padding: 8px 12px; font-size: 0.75rem; } 
+            .main-grid-display-container {
+                gap: 1px; 
+            }
+        }
+    </style>
+</head>
+<body class="text-slate-800">
+
+    <header class="w-full max-w-5xl p-4 md:p-6 mb-6 md:mb-8 text-center glassmorphism-panel mx-auto">
+        <h1 class="text-2xl md:text-4xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-500 via-pink-500 to-blue-500">
+            SanClass Trading Labs
+        </h1>
+    </header>
+
+    <main class="w-full max-w-5xl flex flex-col items-center gap-6 md:gap-8 px-1 md:px-2 mx-auto">
+        <section id="main-grid-section" class="w-full p-3 md:p-4 glassmorphism-panel">
+            <h2 id="quantailine-title" class="text-lg md:text-2xl font-semibold mb-3 md:mb-4 text-center text-blue-600">Quantailine Keyboard - Santime</h2>
+            <div id="main-grid-container" class="main-grid-display-container">
+            </div>
+            <div id="selection-message" class="selection-feedback"></div>
+        </section>
+
+        <section class="w-full p-3 md:p-4 glassmorphism-panel">
+            <h2 class="text-lg md:text-2xl font-semibold mb-3 md:mb-4 text-center text-blue-600">Histori Proses Rooting</h2>
+            <div id="rooting-history-display" class="history-slots-container">
+                </div>
+            <div class="mt-3 md:mt-4 w-full max-w-xs mx-auto text-center">
+                <h3 class="text-md md:text-xl font-medium mb-1 md:mb-2 text-center text-blue-700">Santime Rooting</h3>
+                <div id="santime-rooting-display" class="final-dr-cell p-2 md:p-3 w-16 h-16 md:w-20 md:h-20 mx-auto">
+                    -
+                </div>
+                <div id="santime-rooting-history-display" class="santime-history-display">
+                </div>
+            </div>
+        </section>
+
+        <section class="w-full flex justify-center mt-3 md:mt-4 mb-6 md:mb-8">
+            <button id="reset-btn" class="btn btn-reset"> 
+                Reset
+            </button>
+            <button id="generate-btn" class="btn btn-generate"> 
+                Generate Laporan
+            </button>
+        </section>
+
+        <section id="output-report-container" class="w-full p-3 md:p-4 glassmorphism-panel hidden">
+            <h2 class="text-lg md:text-2xl font-semibold mb-3 md:mb-6 text-center text-blue-600">Laporan Visual Tergenerasi</h2>
+            <div class="mb-4 md:mb-6">
+                <h3 id="report-quantailine-title" class="text-md md:text-xl font-medium mb-2 md:mb-3 text-pink-600 text-center">Visualisasi Yang Tergenerasi Sanva Theory Aritmatika</h3>
+                <div id="report-main-grid" class="main-grid-display-container">
+                </div>
+            </div>
+            <div class="flex flex-col items-center gap-4 md:gap-6">
+                <div>
+                    <h3 class="text-md md:text-xl font-medium mb-2 md:mb-3 text-pink-600 text-center">Angka Terpilih & Histori Rooting:</h3>
+                    <div id="report-selected-history" class="history-slots-container"> 
+                    </div>
+                </div>
+                 <div class="mt-3 md:mt-4 w-full max-w-md mx-auto text-center"> 
+                    <h3 id="report-santime-title" class="text-md md:text-xl font-medium mb-1 md:mb-2 text-center text-blue-700">Signals Santime</h3>
+                    <div id="report-santime-rooting-value" class="final-dr-cell p-2 md:p-3 w-16 h-16 md:w-20 md:h-20 mx-auto">
+                        -
+                    </div>
+                     <div id="report-santime-rooting-history" class="santime-history-display">
+                    </div>
+                    <div id="report-layer-notification" class="layer-notification" style="display: none;"> 
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="w-full max-w-5xl p-4 md:p-6 mt-6 md:mt-8 text-center text-xs md:text-sm text-slate-600 mx-auto">
+        &copy; <span id="currentYear"></span> SanClass Trading Labs. All rights reserved.
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // DOM Elements
+            const quantailineTitle = document.getElementById('quantailine-title');
+            const mainGridContainer = document.getElementById('main-grid-container');
+            const rootingHistoryDisplay = document.getElementById('rooting-history-display'); 
+            const santimeRootingDisplay = document.getElementById('santime-rooting-display');
+            const santimeRootingHistoryDisplay = document.getElementById('santime-rooting-history-display'); 
+            const selectionMessage = document.getElementById('selection-message');
+            const generateBtn = document.getElementById('generate-btn');
+            const resetBtn = document.getElementById('reset-btn'); 
+            
+            // Report DOM Elements
+            const outputReportContainer = document.getElementById('output-report-container');
+            const reportQuantailineTitle = document.getElementById('report-quantailine-title'); 
+            const reportMainGrid = document.getElementById('report-main-grid');
+            const reportSelectedHistory = document.getElementById('report-selected-history'); 
+            const reportSantimeTitle = document.getElementById('report-santime-title'); 
+            const reportSantimeRootingValue = document.getElementById('report-santime-rooting-value'); 
+            const reportSantimeRootingHistory = document.getElementById('report-santime-rooting-history'); 
+            const reportLayerNotification = document.getElementById('report-layer-notification'); 
+
+            document.getElementById('currentYear').textContent = new Date().getFullYear();
+            quantailineTitle.textContent = "Quantailine Keyboard - Santime";
+
+            const gridData = [
+                [57, 58, 59, 60, 61, 62, 63, 64, 65],
+                [56, 31, 32, 33, 34, 35, 36, 37, 66],
+                [55, 30, 13, 14, 15, 16, 17, 38, 67],
+                [54, 29, 12,  3,  4,  5, 18, 39, 68],
+                [53, 28, 11,  2,  1,  6, 19, 40, 69],
+                [52, 27, 10,  9,  8,  7, 20, 41, 70],
+                [51, 26, 25, 24, 23, 22, 21, 42, 71],
+                [50, 49, 48, 47, 46, 45, 44, 43, 72],
+                [81, 80, 79, 78, 77, 76, 75, 74, 73]
+            ];
+
+            let selections = []; 
+            const MAX_SELECTIONS = 81; // Diubah menjadi 81
+
+            rootingHistoryDisplay.innerHTML = ''; 
+            for (let i = 0; i < MAX_SELECTIONS; i++) { 
+                const historySlot = document.createElement('div');
+                historySlot.classList.add('history-display-slot'); 
+                historySlot.id = `history-slot-${i}`;
+                historySlot.innerHTML = '-'; 
+                historySlot.style.display = 'none'; // Sembunyikan slot secara default
+                rootingHistoryDisplay.appendChild(historySlot);
+            }
+            
+            function calculateDigitalRootWithHistory(inputStr) {
+                let currentValStr = String(inputStr).trim();
+                if (!currentValStr || !/^\d+$/.test(currentValStr)) {
+                    return { finalRoot: null, history: '-' };
+                }
+                let historyLog = `${currentValStr}`; 
+                let sum = 0;
+                if (currentValStr.length === 1 && currentValStr !== "0") {
+                     sum = parseInt(currentValStr, 10);
+                } else if (currentValStr === "0") {
+                    sum = 0; 
+                } else { 
+                    let firstSumCalculation = "";
+                    for (let i = 0; i < currentValStr.length; i++) {
+                        sum += parseInt(currentValStr[i], 10);
+                        firstSumCalculation += currentValStr[i] + (i < currentValStr.length - 1 ? "+" : "");
+                    }
+                    historyLog += ` &rarr; ${firstSumCalculation} = ${sum}`;
+                }
+                let tempSum = sum; 
+                while (tempSum > 9) {
+                    let sumAsString = String(tempSum); 
+                    let nextSum = 0; 
+                    let currentStepCalculation = "";
+                    for (let i = 0; i < sumAsString.length; i++) {
+                        nextSum += parseInt(sumAsString[i], 10); 
+                        currentStepCalculation += sumAsString[i] + (i < sumAsString.length - 1 ? "+" : "");
+                    }
+                    tempSum = nextSum; 
+                    historyLog += ` &rarr; ${currentStepCalculation} = ${tempSum}`;
+                }
+                return { finalRoot: tempSum, history: historyLog }; 
+            }
+
+            function refreshDisplaysAndHighlights() {
+                mainGridContainer.querySelectorAll('.grid-cell').forEach(cell => {
+                    cell.classList.remove('highlighted-blue', 'highlighted-pink');
+                });
+
+                let firstActiveApplied = false;
+                let sumOfFinalRoots = 0; 
+                let hasAnyValidRoot = false;
+
+                for (let i = 0; i < MAX_SELECTIONS; i++) { 
+                    const historySlot = document.getElementById(`history-slot-${i}`);
+                    if (i < selections.length) {
+                        const selection = selections[i];
+                        selection.cellElement.classList.add(firstActiveApplied ? 'highlighted-pink' : 'highlighted-blue');
+                        if (!firstActiveApplied) firstActiveApplied = true;
+                        
+                        historySlot.innerHTML = selection.rootingHistory || '-'; 
+                        historySlot.style.display = 'flex'; // Tampilkan slot yang digunakan
+
+                        if (selection.finalRootValue !== null) { 
+                            sumOfFinalRoots += selection.finalRootValue; 
+                            hasAnyValidRoot = true;
+                        }
+                    } else {
+                        historySlot.innerHTML = '-';
+                        historySlot.style.display = 'none'; // Sembunyikan slot yang tidak digunakan
+                    }
+                }
+
+                if (hasAnyValidRoot) {
+                    const santimeResultObj = calculateDigitalRootWithHistory(sumOfFinalRoots.toString());
+                    santimeRootingDisplay.textContent = santimeResultObj.finalRoot !== null ? santimeResultObj.finalRoot : '-';
+                    santimeRootingHistoryDisplay.innerHTML = santimeResultObj.history || '-'; 
+                } else {
+                    santimeRootingDisplay.textContent = '-';
+                    santimeRootingHistoryDisplay.innerHTML = '-'; 
+                }
+                selectionMessage.textContent = '';
+            }
+            
+            mainGridContainer.innerHTML = ''; 
+            gridData.flat().forEach(number => {
+                const cellElement = document.createElement('div');
+                cellElement.classList.add('grid-cell'); 
+                cellElement.textContent = number;
+                cellElement.dataset.value = number.toString(); 
+                
+                cellElement.addEventListener('click', () => {
+                    const clickedValue = cellElement.dataset.value;
+                    const existingSelectionIndex = selections.findIndex(sel => sel.value === clickedValue);
+
+                    if (existingSelectionIndex > -1) {
+                        selections.splice(existingSelectionIndex, 1);
+                    } else {
+                        if (selections.length < MAX_SELECTIONS) { 
+                            const rootingResult = calculateDigitalRootWithHistory(clickedValue);
+                            selections.push({ 
+                                value: clickedValue, 
+                                cellElement: cellElement, 
+                                finalRootValue: rootingResult.finalRoot, 
+                                rootingHistory: rootingResult.history 
+                            });
+                        } else {
+                            selectionMessage.textContent = `Maksimal ${MAX_SELECTIONS} angka bisa dipilih.`; 
+                            setTimeout(() => { selectionMessage.textContent = ''; }, 3000);
+                            return; 
+                        }
+                    }
+                    refreshDisplaysAndHighlights();
+                });
+                mainGridContainer.appendChild(cellElement);
+            });
+            
+            refreshDisplaysAndHighlights();
+
+            resetBtn.addEventListener('click', () => {
+                selections = []; 
+                refreshDisplaysAndHighlights(); 
+                outputReportContainer.classList.add('hidden'); 
+                reportLayerNotification.style.display = 'none'; 
+                selectionMessage.textContent = 'Pilihan telah direset.'; 
+                setTimeout(() => { selectionMessage.textContent = ''; }, 2000);
+            });
+
+            generateBtn.addEventListener('click', () => {
+                reportQuantailineTitle.textContent = "Visualisasi Yang Tergenerasi Sanva Theory Aritmatika";
+                reportSantimeTitle.textContent = "Signals Santime";
+
+                reportMainGrid.innerHTML = ''; 
+                reportSelectedHistory.innerHTML = ''; 
+                reportSantimeRootingValue.textContent = santimeRootingDisplay.textContent; 
+                reportSantimeRootingHistory.innerHTML = santimeRootingHistoryDisplay.innerHTML; 
+
+                if (selections.length === 3) {
+                    reportLayerNotification.textContent = "Ini tiga layer, potensial koreksi...";
+                    reportLayerNotification.style.display = 'block';
+                } else if (selections.length === 5) {
+                    reportLayerNotification.textContent = "Ini lima layer, potensial retracment...";
+                    reportLayerNotification.style.display = 'block';
+                } else {
+                    reportLayerNotification.style.display = 'none'; 
+                }
+
+                gridData.flat().forEach(numberVal => {
+                    const reportCell = document.createElement('div');
+                    reportCell.classList.add('grid-cell');
+                    reportCell.textContent = numberVal;
+                    const numberStr = numberVal.toString();
+
+                    const selectionData = selections.find(sel => sel.value === numberStr);
+                    if (selectionData) {
+                        if (selections.length > 0 && selections[0].value === numberStr) {
+                             reportCell.classList.add('report-highlighted-blue');
+                        } else {
+                             reportCell.classList.add('report-highlighted-pink');
+                        }
+                    }
+                    reportMainGrid.appendChild(reportCell);
+                });
+
+                reportSelectedHistory.innerHTML = ''; 
+                for (let i = 0; i < MAX_SELECTIONS; i++) { 
+                    const historyReportSlot = document.createElement('div');
+                    historyReportSlot.classList.add('history-display-slot'); 
+                    
+                    if (i < selections.length) {
+                        historyReportSlot.innerHTML = `<b>${selections[i].value}:</b><br>${selections[i].rootingHistory || '-'}`;
+                        historyReportSlot.style.display = 'flex'; // Tampilkan slot yang digunakan di laporan
+                    } else {
+                        historyReportSlot.innerHTML = '-';
+                        historyReportSlot.style.display = 'none'; // Sembunyikan slot yang tidak digunakan di laporan
+                    }
+                    reportSelectedHistory.appendChild(historyReportSlot);
+                }
+                
+                outputReportContainer.classList.remove('hidden');
+                outputReportContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+        });
+    </script>
+</body>
+</html>
